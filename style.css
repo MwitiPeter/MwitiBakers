@@ -13,7 +13,7 @@
   outline: none;
   border: none;
   text-decoration: none;
-  text-transform: capitalize;
+  text-transform: none;
   transition: 0.2s linear;
 }
 html {
@@ -23,7 +23,7 @@ html {
   scroll-behavior: smooth;
 }
 html::-webkit-scrollbar {
-  width: 8rem;
+  width: 6rem;
 }
 html::-webkit-scrollbar-track {
   background: transparent;
@@ -44,8 +44,7 @@ html::-webkit-scrollbar-thumb {
   position: fixed;
   padding: 1.4rem 7%;
   z-index: 999;
-  border-radius: 3rem;
-}
+  }
 .header .logocontent {
   display: flex;
   align-items: center;
@@ -111,7 +110,6 @@ html::-webkit-scrollbar-thumb {
   background: url(images/MBsCookie.jpg) no-repeat;
   background-size: cover;
   background-position: center center;
-  border-radius: 3rem;
 }
 .home .homeContent {
   width: 50%;
@@ -219,8 +217,7 @@ section {
   background: url(images/mwitilibrary.jpg) no-repeat;
   background-size: cover;
   background-position: center center;
-  border-radius: 3rem;
-}
+ }
 
 .blogs .blogs-row .box {
   display: flex;
@@ -270,7 +267,6 @@ section {
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
-  border-radius: 2rem;
 }
 .newsletter form {
   max-width: 45rem;
@@ -394,11 +390,11 @@ section {
   height: 4rem;
   width: 4rem;
   line-height: 4rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--white);
   background: var(--black);
   margin: 0.3rem;
-  border-radius: 10%;
+  border-radius: 5%;
 }
 .footer .share a p{
   display: inline;
