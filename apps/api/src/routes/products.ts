@@ -1,0 +1,38 @@
+import { Router } from 'express';
+
+const router = Router();
+
+const sampleProducts = [
+  {
+    id: 'p1',
+    slug: 'rainbow-cake',
+    name: 'Rainbow Cake',
+    type: 'Physical',
+    description: 'A vibrant celebration cake for birthdays and special moments.',
+    price: 2500,
+    currency: 'KES',
+    status: 'in_stock'
+  },
+  {
+    id: 'p2',
+    slug: 'recipe-book',
+    name: 'Recipe Book PDF',
+    type: 'Digital',
+    description: 'Premium bakery recipes with secure post-purchase access.',
+    price: 1200,
+    currency: 'KES',
+    status: 'available'
+  }
+];
+
+router.get('/', (_req, res) => {
+  res.json(sampleProducts);
+});
+
+router.get('/:slug', (req, res) => {
+  const p = sampleProducts.find((x) => x.slug === req.params.slug);
+  if (!p) return res.status(404).json({ error: 'Not found' });
+  res.json(p);
+});
+
+export { router as productsRouter };
