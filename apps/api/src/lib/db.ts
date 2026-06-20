@@ -32,6 +32,26 @@ export async function getOrder(id: string) {
   return col.findOne({ id });
 }
 
+export async function saveUser(user: any) {
+  const c = await getClient();
+  if (!c) {
+    usersStore[user.id] = user;
+    return user;
+  }
+  const db = c.db('mwitibakers');
+  const col = db.collection('users');
+  await col.updateOne({ id: user.id }, { $set: user }, { upsert: true });
+  return user;
+}
+
+export async function getUserByEmail(email: string) {
+  const c = await getClient();
+  if (!c) return Object.values(usersStore).find((u: any) => u.email === email);
+  const db = c.db('mwitibakers');
+  const col = db.collection('users');
+  return col.findOne({ email });
+}
+
 export async function saveCart(session: string, cart: any) {
   const c = await getClient();
   if (!c) {
