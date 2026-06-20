@@ -3,8 +3,7 @@ import { initiatePayment } from '../services/payments';
 
 const router = Router();
 
-// In-memory orders store
-const orders: Record<string, any> = {};
+import { ordersStore } from '../lib/store';
 
 router.post('/', async (req, res) => {
   const { items, totalAmount, currency = 'KES', phone } = req.body as any;
@@ -19,7 +18,7 @@ router.post('/', async (req, res) => {
     status: 'created',
     createdAt: new Date().toISOString()
   };
-  orders[orderId] = order;
+  ordersStore[orderId] = order;
 
   // initiate payment via mock provider for now
   try {
