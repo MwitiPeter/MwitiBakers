@@ -4,6 +4,7 @@ import { healthRouter } from './routes/health';
 import { productsRouter } from './routes/products';
 import { cartRouter } from './routes/cart';
 import { ordersRouter } from './routes/orders';
+import { downloadsRouter } from './routes/downloads';
 
 export function createApp() {
   const app = express();
@@ -20,6 +21,7 @@ export function createApp() {
   app.use('/products', productsRouter);
   app.use('/cart', cartRouter);
   app.use('/orders', ordersRouter);
+  app.use('/downloads', downloadsRouter);
 
   return app;
 }
