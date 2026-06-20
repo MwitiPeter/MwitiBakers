@@ -3,6 +3,7 @@ import { Router } from 'express';
 const router = Router();
 
 import { ordersStore } from '../lib/store';
+import { getOrder } from '../lib/db';
 
 // Endpoint to register an order in-memory (used by orders route in this simple scaffold)
 // We no longer accept external register; use shared ordersStore
@@ -16,7 +17,13 @@ router.post('/_register', (req, res) => {
 // Secure download endpoint (dev): checks order and returns a dummy link
 router.get('/file/:orderId/:productId', (req, res) => {
   const { orderId, productId } = req.params;
-  const order = ordersStore[orderId];
+  const order = (await (async () => {
+    try {
+      return await getOrder(orderId);
+    } catch (e) {
+      return ordersStore[orderId];
+    }
+  })());
   if (!order) return res.status(404).json({ error: 'Order not found' });
 
   // simple entitlement check: order contains productId

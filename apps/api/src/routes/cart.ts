@@ -4,6 +4,7 @@ const router = Router();
 
 // Simple in-memory carts keyed by session (dev only)
 const carts = new Map<string, { items: Array<{ productId: string; qty: number }> }>();
+import { saveCart, getCart as dbGetCart } from '../lib/db';
 
 router.post('/add', (req, res) => {
   const { session = 'anon', productId, qty = 1 } = req.body as any;
@@ -12,13 +13,17 @@ router.post('/add', (req, res) => {
   const existing = cart.items.find((i) => i.productId === productId);
   if (existing) existing.qty += qty;
   else cart.items.push({ productId, qty });
-  carts.set(session, cart);
+  // persist cart if DB available
+  await saveCart(session, cart);
   res.json(cart);
 });
 
 router.get('/:session', (req, res) => {
   const session = req.params.session;
-  res.json(carts.get(session) || { items: [] });
+  // return DB cart if present
+  dbGetCart(session)
+    .then((c) => res.json(c || { items: [] }))
+    .catch(() => res.json(carts.get(session) || { items: [] }));
 });
 
 export { router as cartRouter };

@@ -4,6 +4,7 @@ import { initiatePayment } from '../services/payments';
 const router = Router();
 
 import { ordersStore } from '../lib/store';
+import { saveOrder } from '../lib/db';
 
 router.post('/', async (req, res) => {
   const { items, totalAmount, currency = 'KES', phone } = req.body as any;
@@ -18,7 +19,8 @@ router.post('/', async (req, res) => {
     status: 'created',
     createdAt: new Date().toISOString()
   };
-  ordersStore[orderId] = order;
+  // persist order (MongoDB if configured, otherwise in-memory)
+  await saveOrder(order);
 
   // initiate payment via mock provider for now
   try {
