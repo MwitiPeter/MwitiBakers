@@ -1,0 +1,21 @@
+name: Deploy (placeholder)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Deploy placeholder
+        run: echo "Deployment step - configure your host (Render/Fly/Railway) and add deploy commands here"
