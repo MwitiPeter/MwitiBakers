@@ -6,6 +6,7 @@ import { cartRouter } from './routes/cart';
 import { ordersRouter } from './routes/orders';
 import { downloadsRouter } from './routes/downloads';
 import { authRouter } from './routes/auth';
+import { webhooksRouter } from './routes/webhooks';
 
 export function createApp() {
   const app = express();
@@ -25,6 +26,8 @@ export function createApp() {
   app.use('/downloads', downloadsRouter);
   // auth
   app.use('/auth', authRouter);
+  // webhooks
+  app.use('/webhooks', webhooksRouter);
 
   return app;
 }
