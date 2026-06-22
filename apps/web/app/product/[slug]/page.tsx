@@ -1,17 +1,9 @@
-import { getProduct, addToCart } from '../../../lib/api';
+import { getProduct } from '../../../lib/api';
+import { AddToCartButton } from '../../../components/add-to-cart-button';
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const product = await getProduct(params.slug);
-
-  async function handleAdd() {
-    try {
-      // Call API to add to cart (session 'anon')
-      await addToCart('anon', product.id, 1);
-      alert('Added to cart');
-    } catch (err) {
-      alert('Failed to add to cart');
-    }
-  }
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
 
   return (
     <main className="page-shell">
@@ -21,7 +13,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
         <p>{product.description}</p>
         <div className="meta">
           <span>{product.currency} {product.price}</span>
-          <button className="primary-button" onClick={handleAdd}>Add to cart</button>
+          <AddToCartButton productId={product.id} />
         </div>
       </section>
     </main>

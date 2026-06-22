@@ -1,21 +1,36 @@
-name: Deploy (placeholder)
+name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - name: Deploy placeholder
-        run: echo "Deployment step - configure your host (Render/Fly/Railway) and add deploy commands here"
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy API to Render
+        if: ${{ secrets.RENDER_API_DEPLOY_HOOK != '' }}
+        run: curl -fsS -X POST "${{ secrets.RENDER_API_DEPLOY_HOOK }}"
+
+      - name: Deploy Web to Render
+        if: ${{ secrets.RENDER_WEB_DEPLOY_HOOK != '' }}
+        run: curl -fsS -X POST "${{ secrets.RENDER_WEB_DEPLOY_HOOK }}"
+
+      - name: Skip notice
+        if: ${{ secrets.RENDER_API_DEPLOY_HOOK == '' && secrets.RENDER_WEB_DEPLOY_HOOK == '' }}
+        run: |
+          echo "No deploy hooks configured."
+          echo "Create Render services from render.yaml, then add RENDER_API_DEPLOY_HOOK and RENDER_WEB_DEPLOY_HOOK to GitHub secrets."

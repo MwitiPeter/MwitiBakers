@@ -1,4 +1,4 @@
-use client
+'use client';
 import { useState } from 'react';
 import { createOrder } from '../../lib/api';
 
@@ -11,6 +11,10 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const order = await createOrder({ items: [{ productId: 'p2', qty: 1 }], totalAmount: 1200, currency: 'KES', phone });
+      if (order?.payment?.authorizationUrl) {
+        window.location.href = order.payment.authorizationUrl;
+        return;
+      }
       alert('Order created: ' + order.id + ' status: ' + order.status);
     } catch (err: any) {
       alert('Checkout failed: ' + err.message);
@@ -24,7 +28,7 @@ export default function CheckoutPage() {
       <h1>Checkout</h1>
       <form onSubmit={handleCheckout}>
         <label>
-          Phone (for M-Pesa):
+          Phone or email for Paystack:
           <input value={phone} onChange={(e) => setPhone(e.target.value)} />
         </label>
         <div style={{ marginTop: 12 }}>

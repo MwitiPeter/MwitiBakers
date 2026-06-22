@@ -20,14 +20,16 @@ router.post('/', async (req, res) => {
   // persist order (MongoDB if configured, otherwise in-memory)
   await saveOrder(order);
 
-  // initiate payment via mock provider for now
+  // initiate payment via Paystack
   try {
-    const payment = await initiatePayment('mock', { amount: totalAmount, currency, reference: orderId, phone });
+    const payment = await initiatePayment('paystack', { amount: totalAmount, currency, reference: orderId, phone });
     order.payment = payment;
     order.status = payment.status === 'paid' ? 'paid' : 'payment_pending';
+    await saveOrder(order);
   } catch (err: any) {
     order.status = 'payment_failed';
     order.error = String(err);
+    await saveOrder(order);
   }
 
   res.status(201).json(order);

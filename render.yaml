@@ -1,0 +1,45 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# After connecting the repo, set secret env vars in the Render dashboard:
+#   MONGODB_URI, JWT_SECRET, PAYSTACK_SECRET_KEY, PAYSTACK_CALLBACK_URL, NEXT_PUBLIC_API_BASE_URL
+
+services:
+  - type: web
+    name: mwitibakers-api
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm ci && npm run build -w apps/api
+    startCommand: npm run start -w apps/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_PORT
+        value: 4000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: PAYSTACK_CALLBACK_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+
+  - type: web
+    name: mwitibakers-web
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm ci && npm run build -w apps/web
+    startCommand: npm run start -w apps/web
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_APP_NAME
+        value: Mwiti Bakers
+      - key: NEXT_PUBLIC_API_BASE_URL
+        sync: false

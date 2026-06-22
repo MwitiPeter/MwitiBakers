@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Testing API health..."
-if ! curl -fsS http://localhost:4000/ >/dev/null; then
+API_BASE_URL="${API_BASE_URL:-http://localhost:4000}"
+
+echo "Testing API health at ${API_BASE_URL}..."
+if ! curl -fsS "${API_BASE_URL}/" >/dev/null; then
   echo "API root failed"; exit 2
 fi
 
 echo "Testing products..."
-if ! curl -fsS http://localhost:4000/products | grep -q 'Rainbow Cake'; then
+if ! curl -fsS "${API_BASE_URL}/products" | grep -q 'Rainbow Cake'; then
   echo "Products content unexpected"; exit 3
 fi
 

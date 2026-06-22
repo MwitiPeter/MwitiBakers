@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { env } from './lib/env';
 import { healthRouter } from './routes/health';
 import { productsRouter } from './routes/products';
 import { cartRouter } from './routes/cart';
@@ -11,7 +12,7 @@ import { webhooksRouter } from './routes/webhooks';
 export function createApp() {
   const app = express();
 
-  app.use(cors({ origin: true }));
+  app.use(cors({ origin: env.CORS_ORIGIN ?? true }));
   app.use(express.json({
     verify: (request: any, _response, buffer) => {
       request.rawBody = buffer.toString('utf8');

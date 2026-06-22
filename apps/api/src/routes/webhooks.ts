@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import { ordersStore } from '../lib/store';
 import crypto from 'crypto';
+import { getOrder, saveOrder } from '../lib/db';
 
 const router = Router();
 
-// Paystack webhook for payment confirmation
-router.post('/paystack', (req, res) => {
+router.post('/paystack', async (req, res) => {
   const secret = process.env.PAYSTACK_SECRET_KEY || '';
   if (!secret) {
     console.warn('PAYSTACK_SECRET_KEY not set; skipping webhook validation');
@@ -22,16 +21,17 @@ router.post('/paystack', (req, res) => {
 
   const { event, data } = req.body as any;
   if (event === 'charge.success') {
-    // Extract order ID from reference (format: orderId-timestamp)
     const reference = data.reference as string;
     const orderId = reference.split('-')[0];
 
-    // Find and update order status
-    const order = ordersStore[orderId];
+    const order = await getOrder(orderId);
     if (order) {
       order.status = 'paid';
       order.paymentData = data;
+      await saveOrder(order);
       console.log(`Order ${orderId} marked as paid via Paystack webhook`);
+    } else {
+      console.warn(`Order ${orderId} not found for Paystack webhook`);
     }
   }
 
