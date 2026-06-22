@@ -1,7 +1,7 @@
 import { createApp } from './app';
 import { env } from './lib/env';
 // register payment providers/adapters
-import './services/daraja';
+import './services/paystack';
 // optional Sentry initialization
 if (process.env.SENTRY_DSN) {
   try {
