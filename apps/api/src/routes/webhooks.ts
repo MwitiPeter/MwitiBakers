@@ -10,9 +10,10 @@ router.post('/paystack', (req, res) => {
   if (!secret) {
     console.warn('PAYSTACK_SECRET_KEY not set; skipping webhook validation');
   } else {
+    const rawBody = (req as any).rawBody || JSON.stringify(req.body);
     const hash = crypto
       .createHmac('sha512', secret)
-      .update(JSON.stringify(req.body))
+      .update(rawBody)
       .digest('hex');
     if (hash !== req.headers['x-paystack-signature']) {
       return res.status(401).json({ error: 'Unauthorized' });

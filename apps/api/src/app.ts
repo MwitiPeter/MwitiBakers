@@ -12,7 +12,11 @@ export function createApp() {
   const app = express();
 
   app.use(cors({ origin: true }));
-  app.use(express.json());
+  app.use(express.json({
+    verify: (request: any, _response, buffer) => {
+      request.rawBody = buffer.toString('utf8');
+    }
+  }));
   app.get('/', (_request, response) => {
     response.json({
       name: 'Mwiti Bakers API',
