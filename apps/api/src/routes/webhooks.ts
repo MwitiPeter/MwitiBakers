@@ -6,9 +6,9 @@ const router = Router();
 
 // Paystack webhook for payment confirmation
 router.post('/paystack', (req, res) => {
-  const secret = process.env.PAYSTACK_WEBHOOK_SECRET || '';
+  const secret = process.env.PAYSTACK_SECRET_KEY || '';
   if (!secret) {
-    console.warn('PAYSTACK_WEBHOOK_SECRET not set; skipping webhook validation');
+    console.warn('PAYSTACK_SECRET_KEY not set; skipping webhook validation');
   } else {
     const hash = crypto
       .createHmac('sha512', secret)

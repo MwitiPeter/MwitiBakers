@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { ordersStore, cartsStore } from './store';
+import { ordersStore, cartsStore, usersStore } from './store';
 
 const uri = process.env.MONGODB_URI || '';
 let client: MongoClient | null = null;

@@ -1,12 +1,12 @@
 import { Router } from 'express';
+import { saveCart, getCart as dbGetCart } from '../lib/db';
 
 const router = Router();
 
 // Simple in-memory carts keyed by session (dev only)
 const carts = new Map<string, { items: Array<{ productId: string; qty: number }> }>();
-import { saveCart, getCart as dbGetCart } from '../lib/db';
 
-router.post('/add', (req, res) => {
+router.post('/add', async (req, res) => {
   const { session = 'anon', productId, qty = 1 } = req.body as any;
   if (!productId) return res.status(400).json({ error: 'productId required' });
   const cart = carts.get(session) || { items: [] };

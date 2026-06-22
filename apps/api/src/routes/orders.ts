@@ -1,17 +1,15 @@
 import { Router } from 'express';
 import { initiatePayment } from '../services/payments';
+import { getOrder, saveOrder } from '../lib/db';
 
 const router = Router();
-
-import { ordersStore } from '../lib/store';
-import { saveOrder } from '../lib/db';
 
 router.post('/', async (req, res) => {
   const { items, totalAmount, currency = 'KES', phone } = req.body as any;
   if (!items || !Array.isArray(items)) return res.status(400).json({ error: 'items required' });
 
   const orderId = `ord_${Date.now()}`;
-  const order = {
+  const order: any = {
     id: orderId,
     items,
     totalAmount,
@@ -35,9 +33,9 @@ router.post('/', async (req, res) => {
   res.status(201).json(order);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const id = req.params.id;
-  const order = orders[id];
+  const order = await getOrder(id);
   if (!order) return res.status(404).json({ error: 'Not found' });
   res.json(order);
 });
