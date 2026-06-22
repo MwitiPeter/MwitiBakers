@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { MongoClient } from 'mongodb';
 
 const router = Router();
 
@@ -25,12 +26,30 @@ const sampleProducts = [
   }
 ];
 
-router.get('/', (_req, res) => {
-  res.json(sampleProducts);
+async function getMongoProducts() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) return sampleProducts;
+
+  const client = new MongoClient(uri);
+  try {
+    await client.connect();
+    const db = client.db('mwitibakers');
+    const docs = await db.collection('products').find({ active: true }).toArray();
+    return docs.length > 0 ? docs : sampleProducts;
+  } catch {
+    return sampleProducts;
+  } finally {
+    await client.close().catch(() => undefined);
+  }
+}
+
+router.get('/', async (_req, res) => {
+  res.json(await getMongoProducts());
 });
 
-router.get('/:slug', (req, res) => {
-  const p = sampleProducts.find((x) => x.slug === req.params.slug);
+router.get('/:slug', async (req, res) => {
+  const products = await getMongoProducts();
+  const p = products.find((x) => x.slug === req.params.slug);
   if (!p) return res.status(404).json({ error: 'Not found' });
   res.json(p);
 });
